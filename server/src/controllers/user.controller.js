@@ -89,12 +89,11 @@ export const login = async (req, res) => {
     const password = req.body.password;
 
     try {
-
         if (!email || !password) {
             throw new Error();
         }
 
-        const user = await User.findOne({ email: email, password: password })
+        const user = await User.findUserByDetails(email, password)
         const token = await user.createToken();
 
         res.status(200).send({
@@ -118,7 +117,25 @@ export const login = async (req, res) => {
 }
 
 export const logout = async (req, res) => {
-    const userID = req.params.userID;
-    const token = req.body.token;
+    const user = req.user;
+    const token = req.token;
 
+    try {
+        user.tokens = user.tokens.filter((currentToken) => currentToken.token !== token);
+
+        await user.save();
+
+        res.status(200).send({
+            status: 200,
+            statusText: 'Ok',
+            data: {},
+            message: 'User was logged out successfully',
+        })
+    } catch (err) {
+        res.status(500).send({
+            status: 500,
+            statusText: 'Internal server error',
+            message: '',
+        })
+    }
 }

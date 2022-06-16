@@ -37,15 +37,23 @@ const userSchema = new mongoose.Schema({
                 throw new Error("Make sure the password contains an uppercase character, a lowercase character, a number, and at least 6 characters long")
             }
         }
-    }, tokens: [
+    },
+    tokens: [
         {
             token: {
                 type: String,
                 required: true,
-            }
-        }
-    ]
-})
+            },
+        },
+    ],
+}, {
+    toJSON: {
+        virtuals: true,
+    },
+    toObject: {
+        virtuals: true,
+    },
+});
 
 //hashing the user's password
 userSchema.pre('save', async function (next) {
@@ -88,6 +96,13 @@ userSchema.methods.toJSON = function () {
 
     return userObj;
 };
+
+userSchema.virtual('cart', {
+    ref: 'Cart',
+    localField: '_id',
+    foreignField: 'ownerID',
+
+})
 
 const User = mongoose.model("User", userSchema)
 
