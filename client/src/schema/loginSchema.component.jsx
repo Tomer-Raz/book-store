@@ -6,7 +6,7 @@ const LoginSchema = Yup.object().shape({
         .string()
         .trim()
         .email('Invalid email')
-        .required('Required'),
+        .required(""),
 
     password: Yup
         .string()

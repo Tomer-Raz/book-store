@@ -1,7 +1,10 @@
 .cards {
     display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(310px, 330px));
     padding: 60px;
     grid-gap: 60px;
+    align-items: center;
+    justify-content: center;
 }
 
 .card {
@@ -14,6 +17,7 @@
     transition: .3s;
     text-decoration: none;
     color: black;
+    cursor: pointer;
 }
 
 .card:hover {
@@ -27,6 +31,7 @@
     height: 50%;
     width: 50%;
     display: block;
+    padding-top: 3%;
     margin-left: auto;
     margin-right: auto;
     border-radius: 10px;
@@ -46,7 +51,6 @@
 
 #book-price {
     margin-top: 10px;
-    padding-bottom: 15%;
 }
 
 #add-to-cart-btn {
@@ -63,6 +67,22 @@
     transition: .3s;
     cursor: pointer;
     text-align: center;
+}
+
+#book-in-cart-btn {
+    position: absolute;
+    height: 8%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgb(153, 204, 184);
+    color: white;
+    border: 0px;
+    border-radius: 0px 0px 20px 20px;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: center;
+    cursor: default;
 }
 
 #add-to-cart-btn:hover {

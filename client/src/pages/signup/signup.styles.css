@@ -43,13 +43,14 @@
 
 #signup-button:hover {
     transition: .2s;
-    width: 230px;
-    height: 33px;
     background-color: rgb(98, 167, 114)
 }
 
-#signup-button:active {
-    transform: translate(0px, 3px);
+#signup-button:disabled,
+#signup-button[disabled] {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: default;
 }
 
 .element-container {
@@ -61,6 +62,7 @@
     background: #fff;
     font-weight: 300;
     transition: .3s;
+    outline-color: rgb(168, 161, 161);
 }
 
 

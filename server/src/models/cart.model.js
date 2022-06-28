@@ -8,12 +8,23 @@ const cartSchema = new mongoose.Schema({
     books: [
         {
             bookID: {
-                type: String,
+                type: mongoose.SchemaTypes.ObjectId,
+                ref: 'Book',
                 required: true,
             },
         },
     ]
 });
+
+cartSchema.methods.toJSON = function () {
+    const cart = this;
+
+    const cartObj = cart.toObject();
+    delete cartObj.__v;
+    delete cartObj._id
+
+    return cartObj;
+};
 
 const Cart = mongoose.model('Cart', cartSchema)
 

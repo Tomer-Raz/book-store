@@ -1,0 +1,23 @@
+.cart-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 480px));
+    padding: 60px;
+    grid-gap: 60px;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.empty-list {
+    color: #1d1d1f;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+@media (max-width: 600px) {
+
+    .cart-container {
+        padding: 60px 5px 45px 30px;
+        grid-gap: 30px;
+    }
+}

@@ -3,13 +3,13 @@ import Cart from "../models/cart.model.js";
 export const getCart = async (req, res) => {
     const user = req.user;
     try {
-        const cartBooks = await Cart.find();
-        const userCart = cartBooks.filter((data) => data.ownerID.toString() == user._id)
+        const cart = await Cart.findOne(user._id);
+        await cart.populate('books.bookID');
 
         res.send({
             status: 200,
             statusText: 'ok',
-            data: userCart,
+            data: cart,
             message: ""
         })
 
@@ -27,17 +27,14 @@ export const addBookToCart = async (req, res) => {
     const data = req.body;
 
     try {
-        const cart = new Cart({
-            ownerID: user._id,
-            books: { bookID: data.bookID },
-        });
-
-        await cart.save();
+        const cart = await Cart.findOne(user._id);
+        cart.books.push({ bookID: data.bookID })
+        await cart.save()
 
         res.status(201).send({
             status: 201,
             statusText: 'Created',
-            data: cart,
+            data: { cart: cart },
             message: 'Book added to cart!'
         })
 
@@ -55,23 +52,18 @@ export const removeFromCart = async (req, res) => {
     const data = req.body.bookID;
 
     try {
-        const cartBooks = await Cart.find();
-        const userCart = cartBooks.filter((x) => x.ownerID.toString() == user._id)
+        const cart = await Cart.findOne(user._id);
+        const index = cart.books.findIndex(object => {
+            return object.bookID.toString() === data;
+        })
+        cart.books.splice(index, 1)
+        await cart.save()
 
-        for (let i = 0; i < userCart.length; i++) {
-            if (userCart[i].books[0].bookID == data) {
-                await Cart.findByIdAndDelete(userCart[i]._id)
-            }
-        }
-
-        const cartAfter = await Cart.find();
-        const userCartAfter = cartAfter.filter((x) => x.ownerID.toString() == user._id)
-
-        res.status(201).send({
+        res.status(200).send({
             status: 200,
             statusText: 'Okay',
-            data: userCartAfter,
-            message: 'Book removed from cart!'
+            data: cart,
+            message: `Book removed from cart!`
         })
 
     } catch (err) {
@@ -87,17 +79,14 @@ export const checkout = async (req, res) => {
     const user = req.user;
 
     try {
-        const cartBooks = await Cart.find();
-        const userCart = cartBooks.filter((x) => x.ownerID.toString() == user._id)
-
-        for (let i = 0; i < userCart.length; i++) {
-            await Cart.findByIdAndDelete(userCart[i]._id.toString())
-        }
+        const cart = await Cart.findOne(user._id);
+        cart.books.splice(0, cart.books.length)
+        await cart.save()
 
         res.status(200).send({
             status: 200,
             statusText: 'Okay',
-            data: {},
+            data: cart,
             message: 'Checkout completed, user cart now is empty!'
         })
 

@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Cart from "../models/cart.model.js";
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -23,14 +24,26 @@ export const getAllUsers = async (req, res) => {
 export const createUser = async (req, res) => {
     const data = req.body;
     const user = new User(data);
-
     try {
+
         await user.save();
+
+        const token = await user.createToken();
+
+        const cart = new Cart({
+            ownerID: user._id,
+            books: [],
+        });
+
+        await cart.save()
 
         res.status(201).send({
             status: 201,
             statusText: "Created",
-            data: user,
+            data: {
+                user: user,
+                token: token
+            },
             message: "user was created!"
         })
 
@@ -40,6 +53,7 @@ export const createUser = async (req, res) => {
             statusText: "Bad request",
             message: err
         })
+        console.log(err);
     }
 }
 
