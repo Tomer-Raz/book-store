@@ -3,7 +3,7 @@ import Cart from "../models/cart.model.js";
 export const getCart = async (req, res) => {
     const user = req.user;
     try {
-        const cart = await Cart.findOne(user._id);
+        const cart = await Cart.findOne({ 'ownerID': user._id });
         await cart.populate('books.bookID');
 
         res.send({
@@ -14,9 +14,9 @@ export const getCart = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: '',
         })
     }
@@ -27,7 +27,7 @@ export const addBookToCart = async (req, res) => {
     const data = req.body;
 
     try {
-        const cart = await Cart.findOne(user._id);
+        const cart = await Cart.findOne({ 'ownerID': user._id });
         cart.books.push({ bookID: data.bookID })
         await cart.save()
 
@@ -39,9 +39,9 @@ export const addBookToCart = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: '',
         })
     }
@@ -52,11 +52,12 @@ export const removeFromCart = async (req, res) => {
     const data = req.body.bookID;
 
     try {
-        const cart = await Cart.findOne(user._id);
+        const cart = await Cart.findOne({ 'ownerID': user._id });
         const index = cart.books.findIndex(object => {
             return object.bookID.toString() === data;
         })
         cart.books.splice(index, 1)
+
         await cart.save()
 
         res.status(200).send({
@@ -67,9 +68,9 @@ export const removeFromCart = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: '',
         })
     }
@@ -79,8 +80,10 @@ export const checkout = async (req, res) => {
     const user = req.user;
 
     try {
-        const cart = await Cart.findOne(user._id);
-        cart.books.splice(0, cart.books.length)
+        const cart = await Cart.findOne({ 'ownerID': user._id });
+        // cart.books.splice(0, cart.books.length)
+        cart.books = []
+
         await cart.save()
 
         res.status(200).send({
@@ -91,9 +94,9 @@ export const checkout = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: '',
         })
     }

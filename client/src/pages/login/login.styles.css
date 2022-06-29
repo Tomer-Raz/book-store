@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     width: 100vw;
-    min-height: calc(100vh - 15vh);
+    min-height: 85vh;
 }
 
 .login-container {
@@ -15,10 +15,11 @@
     background-color: white;
     border-radius: 30px;
     padding: 15px;
+    box-shadow: 0px 0px 10px rgb(125, 146, 133);
 }
 
 #title {
-    margin: 15px;
+    margin: 35px;
 }
 
 

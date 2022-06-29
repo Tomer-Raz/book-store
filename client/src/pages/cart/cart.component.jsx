@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './cart.styles.css'
-import Loader from "../../components/loader/loader.component";
+import Loader from "../../components/loader/Loader.component";
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../context/Auth.context";
@@ -8,7 +8,7 @@ import { CartContext } from "../../context/Cart.context";
 import environments from "../../environments/environments";
 import { initialCartAction } from "../../actions/cart.actions";
 import { checkoutAction } from "../../actions/cart.actions";
-import CartContainer from "./cart-container/cartContainer.component";
+import CartContainer from "./cart-container/CartContainer.component";
 
 const Cart = () => {
     const [isLoading, setIsLoading] = useState(true)
@@ -58,6 +58,11 @@ const Cart = () => {
                 const action = initialCartAction(cart);
                 cartContextValue.dispatchCartState(action);
 
+
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 1000);
+
             } catch (err) {
                 navigate('/');
             };
@@ -69,9 +74,6 @@ const Cart = () => {
 
         getCart();
 
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
     }, [])
 
     return isLoading ? (<Loader />) :

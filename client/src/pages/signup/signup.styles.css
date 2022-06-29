@@ -17,7 +17,7 @@
     border-radius: 30px;
     background-color: white;
     padding: 10px 50px;
-
+    box-shadow: 0px 0px 10px rgb(125, 146, 133);
 }
 
 #title {
@@ -37,7 +37,7 @@
     height: 30px;
     border-radius: 10px;
     cursor: pointer;
-    margin: 15px;
+    margin: 10px 0px 10px 0px;
     transition: .2s;
 }
 
@@ -72,7 +72,7 @@
 }
 
 .login-link {
-    margin: 15px;
+    margin-top: 15px;
     text-decoration: none;
     color: rgb(21, 73, 34);
     transition: .3s;
@@ -88,4 +88,48 @@
     background-color: transparent;
     border: 0;
     cursor: pointer;
+}
+
+@media (max-width: 420px) {
+
+    .signup-container {
+        width: 60vw;
+        margin: 40px 0px 40px 0px;
+    }
+
+    input {
+        width: 40vw;
+    }
+
+    #enter-password-input {
+        width: 35vw;
+    }
+}
+
+@media (max-width: 380px) {
+
+    #enter-password-input {
+        width: 30vw;
+    }
+}
+
+@media (max-width: 320px) {
+
+    #enter-password-input {
+        width: 25vw;
+    }
+}
+
+@media (max-width: 270px) {
+
+    #enter-password-input {
+        width: 20vw;
+    }
+}
+
+@media (max-width: 240px) {
+
+    #enter-password-input {
+        width: 10vw;
+    }
 }

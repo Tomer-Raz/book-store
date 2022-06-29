@@ -1,16 +1,13 @@
-import React from "react";
-import './card.styles.css'
-import environments from '../../environments/environments.js'
-import { useEffect } from "react";
-import { BooksContext } from "../../context/Books.context";
-import { initBooksAction } from "../../actions/books.actions";
-import { useContext } from "react";
-import CardChild from "../cardChild/cardChild.component";
+import React, { useEffect, useState } from "react";
+import './cardContainer.styles.css'
+import environments from '../../../environments/environments.js'
+import Card from "./card/Card.component";
+import Loader from "../../../components/loader/Loader.component";
 
-
-const Card = () => {
+const CardContainer = () => {
     const API_URL = environments.API_URL;
-    const booksContextValue = useContext(BooksContext);
+    const [booksState, setBooksState] = useState([])
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const getBooks = async () => {
@@ -22,9 +19,11 @@ const Card = () => {
                 }
                 const payload = await response.json()
                 const books = payload.data
+                setBooksState(books)
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 1000);
 
-                const action = initBooksAction(books)
-                booksContextValue.dispatchBooksState(action)
             } catch (err) {
                 alert("something went wrong")
             }
@@ -32,11 +31,11 @@ const Card = () => {
         getBooks();
     }, [])
 
-    return (
+    return isLoading ? (<Loader />) : (
         <div className="cards">
-            {booksContextValue.booksState.length === 0 ? <div className="empty-list">Your list is empty</div>
-                : booksContextValue.booksState.map((book, index) => {
-                    return <CardChild
+            {booksState.length === 0 ? <div className="empty-list">Whoops, no books found</div>
+                : booksState.map((book, index) => {
+                    return <Card
                         id={book._id}
                         title={book.title}
                         bookCover={book.bookCover}
@@ -50,4 +49,4 @@ const Card = () => {
     )
 }
 
-export default Card;
+export default CardContainer;

@@ -21,7 +21,7 @@ cartSchema.methods.toJSON = function () {
 
     const cartObj = cart.toObject();
     delete cartObj.__v;
-    delete cartObj._id
+
 
     return cartObj;
 };

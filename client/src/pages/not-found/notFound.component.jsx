@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './notFound.styles.css'
-import Loader from "../../components/loader/loader.component";
+import Loader from "../../components/loader/Loader.component";
 
 const NotFound = () => {
 

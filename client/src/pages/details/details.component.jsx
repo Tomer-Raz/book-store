@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import './details.styles.css'
-import Loader from "../../components/loader/loader.component";
+import Loader from "../../components/loader/Loader.component";
 import { useParams } from "react-router-dom";
 import environments from "../../environments/environments.js";
 import { Link } from "react-router-dom";
@@ -20,7 +20,7 @@ const Details = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [isBookInCart, setIsBookInCart] = useState(false)
     const [book, setBook] = useState("")
-
+    const [isFetchFinished, setIsFetchFinished] = useState(false);
 
     const handleAddBook = async () => {
         const data = { 'bookID': bookID };
@@ -89,6 +89,8 @@ const Details = () => {
 
                     const action = initialCartAction(cart);
                     cartContextValue.dispatchCartState(action);
+                    setIsFetchFinished(true)
+
                 } catch (err) {
                     console.log(err);
                 };
@@ -98,13 +100,16 @@ const Details = () => {
 
         getBook();
 
+
         setTimeout(() => {
             setIsLoading(false);
         }, 1000);
-    }, [isBookInCart])
+    }, [])
 
+    if (authContextValue.userToken) {
+        if (!isFetchFinished) return <Loader />;
+    }
     return isLoading ? (<Loader />) : (
-
         <div className="details-page">
             <div className="details-container">
                 <img id="details-img" alt={book.title} src={book.bookCover}></img>

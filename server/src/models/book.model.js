@@ -13,10 +13,12 @@ const bookSchema = new mongoose.Schema({
     },
     pages: {
         type: Number,
+        min: 1,
         required: [true, 'number of pages is required']
     },
     price: {
         type: Number,
+        min: 0,
         required: [true, 'price is required']
     },
     bookCover: {
@@ -26,9 +28,18 @@ const bookSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'image is required'],
+        required: [true, 'description is required'],
     },
 })
+
+bookSchema.methods.toJSON = function () {
+    const book = this;
+    const bookObj = book.toObject();
+    delete bookObj.__v;
+
+    return bookObj;
+};
+
 
 
 const Book = mongoose.model('Book', bookSchema)

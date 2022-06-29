@@ -1,25 +1,66 @@
 import User from "../models/user.model.js";
 import Cart from "../models/cart.model.js";
 
-export const getAllUsers = async (req, res) => {
-    try {
-        const users = await User.find()
+// export const getAllUsers = async (req, res) => {
+//     try {
+//         const users = await User.find()
 
-        res.send({
-            status: 200,
-            statusText: "ok",
-            data: users,
-            message: '',
-        })
+//         res.send({
+//             status: 200,
+//             statusText: "ok",
+//             data: users,
+//             message: '',
+//         })
 
-    } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
-            message: '',
-        })
-    }
-}
+//     } catch (err) {
+//         res.status(500).send({
+//             status: 500,
+//             statusText: "Internal server error",
+//             message: '',
+//         })
+//     }
+// }
+// export const getUser = async (req, res) => {
+//     const userID = req.params.userID;
+//     const user = await User.findById(userID)
+
+//     try {
+//         res.status(200).send({
+//             status: 200,
+//             statusText: "ok",
+//             data: user,
+//             message: ''
+//         })
+
+//     } catch (err) {
+//         res.status(500).send({
+//             status: 500,
+//             statusText: "Internal server error",
+//             message: ''
+//         })
+//     }
+// }
+
+// export const deleteUser = async (req, res) => {
+//     const userID = req.params.userID
+
+//     try {
+//         await User.findByIdAndDelete(userID)
+
+//         res.status(200).send({
+//             status: 200,
+//             statusText: "ok",
+//             data: {},
+//             message: "User deleted successfully!"
+//         })
+//     } catch (err) {
+//         res.status(400).send({
+//             status: 400,
+//             statusText: "Bad request",
+//             message: ''
+//         })
+//     }
+// }
 
 export const createUser = async (req, res) => {
     const data = req.body;
@@ -48,55 +89,15 @@ export const createUser = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: err
         })
         console.log(err);
     }
 }
 
-export const getUser = async (req, res) => {
-    const userID = req.params.userID;
-    const user = await User.findById(userID)
-
-    try {
-        res.status(200).send({
-            status: 200,
-            statusText: "ok",
-            data: user,
-            message: ''
-        })
-
-    } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
-            message: ''
-        })
-    }
-}
-
-export const deleteUser = async (req, res) => {
-    const userID = req.params.userID
-    await User.findByIdAndDelete(userID)
-
-    try {
-        res.status(200).send({
-            status: 200,
-            statusText: "ok",
-            data: {},
-            message: "User deleted successfully!"
-        })
-    } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
-            message: ''
-        })
-    }
-}
 
 export const login = async (req, res) => {
     const email = req.body.email;
@@ -122,9 +123,9 @@ export const login = async (req, res) => {
 
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(403).send({
+            status: 403,
+            statusText: "Forbidden",
             message: "",
         })
     }

@@ -1,14 +1,13 @@
 import './App.css';
-import Header from './components/header/header.component';
-import Footer from './components/footer/footer.component';
-import HomePage from './pages/home/homePage.component';
-import NotFound from './pages/not-found/notFound.component';
-import LoginPage from './pages/login/login.component';
-import SignupPage from './pages/signup/signup.component';
-import Cart from './pages/cart/cart.component';
-import Details from './pages/details/details.component';
+import Header from './components/header/Header.component';
+import Footer from './components/footer/Footer.component';
+import Home from './pages/home/Home.component';
+import NotFound from './pages/not-found/NotFound.component';
+import Login from './pages/login/Login.component';
+import Signup from './pages/signup/Signup.component';
+import Cart from './pages/cart/Cart.component';
+import Details from './pages/details/Details.component';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import BooksContextProvider from './context/Books.context';
 import AuthContextProvider from './context/Auth.context';
 import CartContextProvider from './context/Cart.context';
 
@@ -18,24 +17,22 @@ const App = () => {
     <div className="App">
       <BrowserRouter>
         <AuthContextProvider>
-          <BooksContextProvider>
-            <CartContextProvider>
+          <CartContextProvider>
 
-              <Header />
-              <Routes>
+            <Header />
+            <Routes>
 
-                <Route path='' element={<HomePage />} />
-                <Route path='login' element={<LoginPage />} />
-                <Route path='signup' element={<SignupPage />} />
-                <Route path='cart' element={<Cart />} />
-                <Route path='book/:bookID' element={<Details />} />
-                <Route path='*' element={<NotFound />} />
+              <Route path='' element={<Home />} />
+              <Route path='login' element={<Login />} />
+              <Route path='signup' element={<Signup />} />
+              <Route path='cart' element={<Cart />} />
+              <Route path='book/:bookID' element={<Details />} />
+              <Route path='*' element={<NotFound />} />
 
-              </Routes>
-              <Footer />
+            </Routes>
+            <Footer />
 
-            </CartContextProvider>
-          </BooksContextProvider>
+          </CartContextProvider>
         </AuthContextProvider>
       </BrowserRouter>
     </div>

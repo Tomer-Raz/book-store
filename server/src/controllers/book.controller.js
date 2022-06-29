@@ -1,27 +1,27 @@
 import Book from "../models/book.model.js";
 
-export const createBook = async (req, res) => {
-    const data = req.body
-    const book = new Book(data);
+// export const createBook = async (req, res) => {
+//     const data = req.body
+//     const book = new Book(data);
 
-    try {
-        await book.save();
+//     try {
+//         await book.save();
 
-        res.status(201).send({
-            status: 201,
-            statusText: "created",
-            data: book,
-            message: 'Book Created!'
-        })
+//         res.status(201).send({
+//             status: 201,
+//             statusText: "created",
+//             data: book,
+//             message: 'Book Created!'
+//         })
 
-    } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
-            message: '',
-        })
-    }
-}
+//     } catch (err) {
+//         res.status(400).send({
+//             status: 400,
+//             statusText: "Bad request",
+//             message: '',
+//         })
+//     }
+// }
 
 export const getAllBooks = async (req, res) => {
     try {
@@ -35,9 +35,9 @@ export const getAllBooks = async (req, res) => {
 
 
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: '',
         })
     }
@@ -54,31 +54,31 @@ export const getBook = async (req, res) => {
             message: ''
         })
     } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
+        res.status(500).send({
+            status: 500,
+            statusText: "Internal server error",
             message: '',
         })
     }
 }
 
-export const deleteBook = async (req, res) => {
-    const bookID = req.params.bookID
+// export const deleteBook = async (req, res) => {
+//     const bookID = req.params.bookID
 
-    try {
-        await Book.findByIdAndDelete(bookID)
-        res.send({
-            status: 200,
-            statusText: "Ok",
-            data: {},
-            message: "Book Deleted Successfully!"
-        })
+//     try {
+//         await Book.findByIdAndDelete(bookID)
+//         res.send({
+//             status: 200,
+//             statusText: "Ok",
+//             data: {},
+//             message: "Book Deleted Successfully!"
+//         })
 
-    } catch (err) {
-        res.status(400).send({
-            status: 400,
-            statusText: "Bad request",
-            message: '',
-        })
-    }
-}
+//     } catch (err) {
+//         res.status(500).send({
+//             status: 500,
+//             statusText: "Internal server error",
+//             message: '',
+//         })
+//     }
+// }
