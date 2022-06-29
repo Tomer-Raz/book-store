@@ -28,9 +28,7 @@ const Signup = () => {
     const eye1 = <FontAwesomeIcon icon={faEye} style={{ color: "gray" }} />
     const eye2 = <FontAwesomeIcon icon={faEyeSlash} style={{ color: "gray" }} />
 
-
     const handleSignup = async (data) => {
-
         try {
             const response = await fetch(`${API_URL}/users/new`, {
                 method: 'POST',

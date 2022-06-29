@@ -1,4 +1,6 @@
 import * as Yup from 'yup';
+import YupPassword from 'yup-password'
+YupPassword(Yup)
 
 const SignupSchema = Yup.object().shape({
 
@@ -24,6 +26,9 @@ const SignupSchema = Yup.object().shape({
         .string()
         .min(6, "Password must be at least 6 characters")
         .max(20, 'Password must be less than 20 charcters')
+        .minLowercase(1, "Password must include a lowercase letter")
+        .minUppercase(1, "Password must include an uppercase letter")
+        .minNumbers(1, "Password must include a number")
         .trim()
         .required(""),
 

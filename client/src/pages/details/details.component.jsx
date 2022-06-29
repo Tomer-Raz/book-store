@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import './details.styles.css'
 import Loader from "../../components/loader/Loader.component";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import environments from "../../environments/environments.js";
-import { Link } from "react-router-dom";
 import { CartContext } from '../../context/Cart.context';
 import { AuthContext } from "../../context/Auth.context";
 import { addToCartAction } from "../../actions/cart.actions";

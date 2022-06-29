@@ -16,7 +16,7 @@ const CartItem = (props) => {
         const data = { 'bookID': props.id };
         try {
             const response = await fetch(`${API_URL}/cart/`, {
-                method: 'DELETE',
+                method: 'PATCH',
                 headers: {
                     'Authorization': `Bearer ${authContextValue.userToken}`,
                     'Content-Type': 'application/json',

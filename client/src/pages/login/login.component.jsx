@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import LoginFormContainer from './login-form-container/LoginFormContainer.component';
 
-
 const Login = () => {
 
     const authConextValue = useContext(AuthContext);

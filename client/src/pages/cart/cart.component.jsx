@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import './cart.styles.css'
 import Loader from "../../components/loader/Loader.component";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { AuthContext } from "../../context/Auth.context";
 import { CartContext } from "../../context/Cart.context";
 import environments from "../../environments/environments";
@@ -20,7 +19,7 @@ const Cart = () => {
     const handleCheckout = async () => {
         try {
             const response = await fetch(`${API_URL}/cart/checkout`, {
-                method: 'DELETE',
+                method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${authContextValue.userToken}`,
                 },
