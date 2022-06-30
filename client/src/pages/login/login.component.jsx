@@ -2,19 +2,18 @@ import React, { useEffect, useState, useContext } from 'react'
 import './login.styles.css'
 
 import Loader from '../../components/loader/Loader.component'
-import environments from '../../environments/environments';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/Auth.context';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import LoginFormContainer from './login-form-container/LoginFormContainer.component';
+import { userLogin } from '../../services/user.service';
 
 const Login = () => {
 
-    const authConextValue = useContext(AuthContext);
+    const { userToken, setUserToken } = useContext(AuthContext);
     const navigate = useNavigate();
-    const API_URL = environments.API_URL;
 
     const [isLoading, setIsLoading] = useState(true)
     const [passwordShown, setPasswordShown] = useState(false);
@@ -25,23 +24,10 @@ const Login = () => {
 
     const handleLogin = async (data) => {
         try {
-            const response = await fetch(`${API_URL}/users/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+            const { data: token } = await userLogin(data)
 
-            if (!response.ok) {
-                throw new Error();
-            }
-
-            const responseData = await response.json();
-            const token = responseData.data.token;
-
-            localStorage.setItem('user-token', token);
-            authConextValue.setUserToken(token);
+            localStorage.setItem('user-token', token.token);
+            setUserToken(token.token);
 
             navigate('/');
 
@@ -56,7 +42,7 @@ const Login = () => {
     };
 
     useEffect(() => {
-        if (authConextValue.userToken) {
+        if (userToken) {
             navigate('/')
         }
         setTimeout(() => {

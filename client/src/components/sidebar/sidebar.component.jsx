@@ -1,68 +1,58 @@
-import React from "react";
+import React, { useContext } from "react";
 import './sidebar.styles.css'
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/Auth.context";
-import { useContext } from "react";
-import environments from "../../environments/environments";
+import { userLogout } from "../../services/user.service";
+import { ERROR_MESSAGE, USER_TOKEN } from "../../constants/constants";
 
 const Sidebar = (props) => {
-    const authContextValue = useContext(AuthContext)
-
-    const API_URL = environments.API_URL;
+    const { className, hideSidebar } = props
+    const { userToken, setUserToken } = useContext(AuthContext)
     const navigate = useNavigate()
 
     const handleLogout = async () => {
         try {
-            const response = await fetch(`${API_URL}/users/logout`, {
-                method: 'Post',
-                headers: {
-                    'Authorization': `Bearer ${authContextValue.userToken}`,
-                },
-            });
+            await userLogout(userToken)
 
-            if (!response.ok) {
-                throw new Error();
-            }
-
-            localStorage.removeItem('user-token');
-            authContextValue.setUserToken(null);
-            props.hideSidebar();
+            localStorage.removeItem(USER_TOKEN);
+            setUserToken(null);
+            hideSidebar();
             navigate('/login');
 
         } catch (err) {
-            alert('Something went wrong')
+            alert(ERROR_MESSAGE)
         }
     }
 
     return (
-        <div className={`sidebar-page ${props.className}`}>
+        <div className={`sidebar-page ${className}`}>
             <div className="sidebar-container">
                 <div className="links">
-                    <button id="button" onClick={props.hideSidebar}>X</button>
+                    <button id="button" onClick={hideSidebar}>X</button>
                     <ul>
                         <li>
-                            <Link to='/' className="sidebar-link" onClick={props.hideSidebar}>Home</Link>
+                            <Link to='/' className="sidebar-link" onClick={hideSidebar}>Home</Link>
                         </li>
 
-                        {authContextValue.userToken ? null : <li>
-                            <Link to="/login" className="sidebar-link" onClick={props.hideSidebar}>
+                        {userToken ? null : <li>
+                            <Link to="/login" className="sidebar-link" onClick={hideSidebar}>
                                 Login
                             </Link>
                         </li>}
 
-                        {authContextValue.userToken ? null : <li>
-                            <Link to="/signup" className="sidebar-link" onClick={props.hideSidebar}>
+                        {userToken ? null : <li>
+                            <Link to="/signup" className="sidebar-link" onClick={hideSidebar}>
                                 Sign Up
                             </Link>
                         </li>}
 
-                        {!authContextValue.userToken ? null : <li>
-                            <Link to="/cart" className="sidebar-link" onClick={props.hideSidebar} >
+                        {!userToken ? null : <li>
+                            <Link to="/cart" className="sidebar-link" onClick={hideSidebar} >
                                 Cart
                             </Link>
                         </li>}
 
-                        {!authContextValue.userToken ? null : <li>
+                        {!userToken ? null : <li>
                             <Link to="/login" className="sidebar-link" onClick={handleLogout} >
                                 Log Out
                             </Link>

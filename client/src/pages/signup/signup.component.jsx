@@ -7,15 +7,14 @@ import Loader from "../../components/loader/Loader.component";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 
-import environments from "../../environments/environments";
 import { AuthContext } from "../../context/Auth.context";
 import SignupFormContainer from "./signup-form-container/SignupFormContainer.component";
+import { createUser } from "../../services/user.service";
 
 const Signup = () => {
 
-    const API_URL = environments.API_URL;
     const navigate = useNavigate();
-    const authConextValue = useContext(AuthContext)
+    const { userToken, setUserToken } = useContext(AuthContext);
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -30,28 +29,15 @@ const Signup = () => {
 
     const handleSignup = async (data) => {
         try {
-            const response = await fetch(`${API_URL}/users/new`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+            const { data: token } = await createUser(data)
 
-            if (response.status !== 201) {
-                throw new Error();
-            }
-
-            const responseData = await response.json();
-            const token = responseData.data.token;
-
-            localStorage.setItem('user-token', token);
-            authConextValue.setUserToken(token);
+            localStorage.setItem('user-token', token.token);
+            setUserToken(token.token);
 
             navigate('/');
 
         } catch (err) {
-            alert('Something went wrong')
+            alert('Wrong email or password')
         }
     }
 
@@ -66,7 +52,7 @@ const Signup = () => {
     };
 
     useEffect(() => {
-        if (authConextValue.userToken) {
+        if (userToken) {
             navigate('/')
         }
         setTimeout(() => {

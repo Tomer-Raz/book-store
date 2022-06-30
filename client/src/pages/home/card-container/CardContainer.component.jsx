@@ -1,31 +1,26 @@
 import React, { useEffect, useState } from "react";
 import './cardContainer.styles.css'
-import environments from '../../../environments/environments.js'
 import Card from "./card/Card.component";
 import Loader from "../../../components/loader/Loader.component";
+import { getAllBooks } from "../../../services/book.service";
+import { ERROR_MESSAGE, LOADER_TIMEOUT } from "../../../constants/constants";
 
 const CardContainer = () => {
-    const API_URL = environments.API_URL;
     const [booksState, setBooksState] = useState([])
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const getBooks = async () => {
             try {
-                const response = await fetch(`${API_URL}/books/`)
-
-                if (!response.ok) {
-                    throw new Error();
-                }
-                const payload = await response.json()
-                const books = payload.data
+                const { data: books } = await getAllBooks()
                 setBooksState(books)
+
                 setTimeout(() => {
                     setIsLoading(false);
-                }, 1000);
+                }, LOADER_TIMEOUT);
 
             } catch (err) {
-                alert("something went wrong")
+                alert(ERROR_MESSAGE)
             }
         }
         getBooks();
@@ -42,7 +37,6 @@ const CardContainer = () => {
                         author={book.author}
                         pages={book.pages}
                         price={book.price}
-                        description={book.description}
                         key={index} />
                 })}
         </div>

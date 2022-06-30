@@ -1,82 +1,62 @@
 import React, { useState, useEffect, useContext } from "react";
-import './cart.styles.css'
-import Loader from "../../components/loader/Loader.component";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/Auth.context";
-import { CartContext } from "../../context/Cart.context";
-import environments from "../../environments/environments";
-import { initialCartAction } from "../../actions/cart.actions";
-import { checkoutAction } from "../../actions/cart.actions";
+import './cart.styles.css'
+
+import Loader from "../../components/loader/Loader.component";
 import CartContainer from "./cart-container/CartContainer.component";
 
+import { AuthContext } from "../../context/Auth.context";
+import { CartContext } from "../../context/Cart.context";
+
+import { checkoutAction, initialCartAction } from "../../actions/cart.actions";
+import { ERROR_MESSAGE, LOADER_TIMEOUT } from "../../constants/constants";
+import { getCart, cartCheckout } from "../../services/cart.service";
+
 const Cart = () => {
-    const [isLoading, setIsLoading] = useState(true)
     const navigate = useNavigate();
-    const authContextValue = useContext(AuthContext)
-    const cartContextValue = useContext(CartContext)
-    const API_URL = environments.API_URL
+    const [isLoading, setIsLoading] = useState(true)
+    const { userToken } = useContext(AuthContext)
+    const { cartState: { cart, price }, dispatchCartState } = useContext(CartContext)
 
     const handleCheckout = async () => {
         try {
-            const response = await fetch(`${API_URL}/cart/checkout`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${authContextValue.userToken}`,
-                },
-            });
+            const { message } = await cartCheckout(userToken)
 
-            if (!response.ok) {
-                throw new Error();
-            }
-
-            alert("Checkout Completed!")
-            cartContextValue.dispatchCartState(checkoutAction());
+            alert(message)
+            dispatchCartState(checkoutAction());
             navigate('/');
 
         } catch (err) {
-            alert("something went wrong!")
+            alert(ERROR_MESSAGE)
         };
     }
 
     useEffect(() => {
-        const getCart = async () => {
+        const checkCart = async () => {
             try {
-                const response = await fetch(`${API_URL}/cart`, {
-                    headers: {
-                        'Authorization': `Bearer ${authContextValue.userToken}`,
-                    },
-                });
+                const { data: { books } } = await getCart(userToken)
 
-                if (!response.ok) {
-                    throw new Error();
-                }
-
-                const responseObj = await response.json();
-                const cart = responseObj.data.books;
-
-                const action = initialCartAction(cart);
-                cartContextValue.dispatchCartState(action);
-
+                const action = initialCartAction(books)
+                dispatchCartState(action);
 
                 setTimeout(() => {
-                    setIsLoading(false);
-                }, 1000);
+                    setIsLoading(false)
+                }, LOADER_TIMEOUT)
 
             } catch (err) {
-                navigate('/');
+                console.log(err);
             };
         }
+        checkCart();
 
-        if (!authContextValue.userToken) {
+        if (!userToken) {
             navigate('/')
         }
-
-        getCart();
 
     }, [])
 
     return isLoading ? (<Loader />) :
-        cartContextValue.cartState.cart.length === 0 ? (
+        cart.length === 0 ? (
             <div className="cart-page empty">
                 <h1 id="empty-cart-text">Your Cart is empty</h1>
             </div>
@@ -84,7 +64,7 @@ const Cart = () => {
         ) : (
             <div className="cart-page">
                 <CartContainer />
-                <h3 id="total-price">Your Total Is: {cartContextValue.cartState.price}$</h3>
+                <h3 id="total-price">Your Total Is: {price}$</h3>
                 <button type="button" id="checkout-button" onClick={handleCheckout}>Checkout</button>
             </div>
         )

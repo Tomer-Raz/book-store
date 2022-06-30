@@ -2,9 +2,11 @@ const booksActionTypes = {
     INIT_BOOKS: 'INIT_BOOKS',
 };
 
+const { INIT_BOOKS } = booksActionTypes
+
 export const initBooksAction = (books) => {
     const action = {
-        type: booksActionTypes.INIT_BOOKS,
+        type: INIT_BOOKS,
         payload: {
             books: books,
         },

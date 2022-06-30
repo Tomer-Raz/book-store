@@ -1,52 +1,38 @@
 import React, { useContext } from 'react';
 import { CartContext } from '../../../../context/Cart.context';
 import { AuthContext } from '../../../../context/Auth.context'
-import environments from '../../../../environments/environments';
-
 import { removeCartAction } from '../../../../actions/cart.actions';
+import { removeBookFromCart } from '../../../../services/cart.service';
 
 import './cartItem.styles.css';
+import { ERROR_MESSAGE } from '../../../../constants/constants';
 
 const CartItem = (props) => {
-    const cartContextValue = useContext(CartContext)
-    const authContextValue = useContext(AuthContext)
-    const API_URL = environments.API_URL;
+    const { id, price, bookCover, title } = props
+    const { dispatchCartState } = useContext(CartContext)
+    const { userToken } = useContext(AuthContext)
 
     const handleDeleteBook = async () => {
-        const data = { 'bookID': props.id };
+        const data = { 'bookID': id };
         try {
-            const response = await fetch(`${API_URL}/cart/`, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${authContextValue.userToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
+            const { message } = await removeBookFromCart(userToken, data)
 
-            if (response.status !== 200) {
-                throw new Error();
-            }
+            const action = removeCartAction(id)
+            dispatchCartState(action);
 
-
-            //dispatch reducer
-            const action = removeCartAction(props.id)
-            cartContextValue.dispatchCartState(action);
-
-            const responseObj = await response.json();
-            alert(responseObj.message)
+            alert(message)
 
         } catch (err) {
-            alert('Something went wrong')
+            alert(ERROR_MESSAGE)
         }
     }
 
     return (
         <div className='cart-item-container'>
-            <img id="book-img-cart" src={props.bookCover} />
+            <img id="book-img-cart" src={bookCover} />
             <div className="book-details">
-                <h3 id="book-title-cart">{props.title}</h3>
-                <h5 id="book-price-cart">{props.price}$</h5>
+                <h3 id="book-title-cart">{title}</h3>
+                <h5 id="book-price-cart">{price}$</h5>
                 <button type='button' id='book-button-cart' onClick={handleDeleteBook}>Remove</button>
             </div>
         </div >

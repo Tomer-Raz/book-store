@@ -5,11 +5,13 @@ const cartActionTypes = {
     CHECKOUT: 'CHECKOUT',
 };
 
+const { INITIAL_CART_STATE, REMOVE_FROM_CART, ADD_TO_CART, CHECKOUT } = cartActionTypes
+
 export const initialCartAction = (cart) => {
     const action = {
-        type: cartActionTypes.INITIAL_CART_STATE,
+        type: INITIAL_CART_STATE,
         payload: {
-            cart: cart,
+            cart,
         },
     };
     return action;
@@ -17,9 +19,9 @@ export const initialCartAction = (cart) => {
 
 export const removeCartAction = (bookID) => {
     const action = {
-        type: cartActionTypes.REMOVE_FROM_CART,
+        type: REMOVE_FROM_CART,
         payload: {
-            bookID: bookID,
+            bookID,
         },
     };
     return action;
@@ -27,9 +29,9 @@ export const removeCartAction = (bookID) => {
 
 export const addToCartAction = (bookID) => {
     const action = {
-        type: cartActionTypes.ADD_TO_CART,
+        type: ADD_TO_CART,
         payload: {
-            bookID: bookID,
+            bookID,
         },
     };
     return action;
@@ -37,7 +39,7 @@ export const addToCartAction = (bookID) => {
 
 export const checkoutAction = () => {
     const action = {
-        type: cartActionTypes.CHECKOUT,
+        type: CHECKOUT,
         payload: {},
     }
     return action;

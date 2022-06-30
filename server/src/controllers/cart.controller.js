@@ -88,9 +88,9 @@ export const checkout = async (req, res) => {
 
         res.status(200).send({
             status: 200,
-            statusText: 'Okay',
+            statusText: 'Ok',
             data: cart,
-            message: 'Checkout completed, user cart now is empty!'
+            message: 'Checkout Completed!'
         })
 
     } catch (err) {

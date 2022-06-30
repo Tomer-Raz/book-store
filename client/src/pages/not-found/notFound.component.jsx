@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import './notFound.styles.css'
 import Loader from "../../components/loader/Loader.component";
+import { LOADER_TIMEOUT } from "../../constants/constants";
 
 const NotFound = () => {
 
@@ -9,7 +10,7 @@ const NotFound = () => {
     useEffect(() => {
         setTimeout(() => {
             setIsLoading(false);
-        }, 1000);
+        }, LOADER_TIMEOUT);
     }, [])
 
     return isLoading ? (<Loader />) : (
