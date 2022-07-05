@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import Cart from "../models/cart.model.js";
 
-import { SuccessResponse } from "../models/response.model.js";
+import { ErrorResponse, SuccessResponse } from "../models/response.model.js";
 
 // export const getAllUsers = async (req, res) => {
 //     try {
@@ -70,63 +70,43 @@ export const createUser = async (req, res, next) => {
 
     if (!data.firstName || data.firstName === '') {
         res.status(400).send();
-
         return;
+    } else {
+        next();
     }
 
     try {
         await user.save();
-
         const token = await user.createToken();
 
         const cart = new Cart({
             ownerID: user._id,
             books: [],
-        });
-
+        })
         await cart.save()
 
         res.status(201).send(new SuccessResponse(201, "Created", { user, token }, "user was created!"))
     } catch (err) {
-        res.status(500).send({
-            status: 500,
-            statusText: "Internal server error",
-            message: err
-        })
-        console.log(err);
+        res.status(500).send(new ErrorResponse(500, "Internal server error", ""))
     }
 }
-
 
 export const login = async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
+    if (!email || !password) {
+        res.status(400).send();
+        return;
+    }
     try {
-        if (!email || !password) {
-            throw new Error();
-        }
-
         const user = await User.findUserByDetails(email, password)
         const token = await user.createToken();
 
-        res.status(200).send({
-            status: 200,
-            statusText: "ok",
-            data: {
-                user: user,
-                token: token
-            },
-            message: "User logged in successfully!"
-        })
-
+        res.status(200).send(new SuccessResponse(200, "Ok", { user, token }, "User logged in successfully!"))
 
     } catch (err) {
-        res.status(403).send({
-            status: 403,
-            statusText: "Forbidden",
-            message: "",
-        })
+        res.status(403).send(new ErrorResponse(403, "Forbidden", ""))
     }
 }
 
@@ -136,20 +116,11 @@ export const logout = async (req, res) => {
 
     try {
         user.tokens = user.tokens.filter((currentToken) => currentToken.token !== token);
-
         await user.save();
 
-        res.status(200).send({
-            status: 200,
-            statusText: 'Ok',
-            data: {},
-            message: 'User was logged out successfully',
-        })
+        res.status(200).send(new SuccessResponse(200, "Ok", {}, 'User logged out successfully'))
+
     } catch (err) {
-        res.status(500).send({
-            status: 500,
-            statusText: 'Internal server error',
-            message: '',
-        })
+        res.status(500).send(new ErrorResponse(500, "Internal server error", ''))
     }
 }

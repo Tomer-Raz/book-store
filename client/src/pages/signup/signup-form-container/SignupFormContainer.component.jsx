@@ -1,9 +1,50 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react'
 import { Formik, Field, Form } from 'formik';
 import SignupSchema from '../../../schema/SignupSchema.component';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../context/Auth.context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { ERROR_MESSAGE, USER_TOKEN } from '../../../constants/constants';
+import { createUser } from '../../../services/user.service';
 
-const SignupFormContainer = (props) => {
+const SignupFormContainer = () => {
+
+    const navigate = useNavigate();
+    const { setUserToken } = useContext(AuthContext);
+
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [confirmedPasswordShown, setConfirmedPasswordShown] = useState(false);
+
+    const [whichLogo, setLogo] = useState(true)
+    const [whichLogoConfirmed, setLogoConfirmed] = useState(true)
+
+    const eye1 = <FontAwesomeIcon icon={faEye} style={{ color: "gray" }} />
+    const eye2 = <FontAwesomeIcon icon={faEyeSlash} style={{ color: "gray" }} />
+
+    const handleSignup = async (data) => {
+        try {
+            const { data: token } = await createUser(data)
+
+            localStorage.setItem(USER_TOKEN, token.token);
+            setUserToken(token.token);
+
+            navigate('/');
+
+        } catch (err) {
+            alert(ERROR_MESSAGE)
+        }
+    }
+
+    const toggleVisibility = () => {
+        setPasswordShown(!passwordShown);
+        setLogo(!whichLogo)
+    };
+
+    const toggleVisibilityConfirmed = () => {
+        setConfirmedPasswordShown(!confirmedPasswordShown);
+        setLogoConfirmed(!whichLogoConfirmed)
+    };
 
     return (
 
@@ -28,13 +69,13 @@ const SignupFormContainer = (props) => {
                         {errors.email && touched.email ? (<div className='validation-error-text'>{errors.email}</div>) : null}
 
                         <h6>Enter Password:</h6>
-                        <Field id="enter-password-input" name="password" type={props.passwordShown ? "text" : "password"} maxLength="25" className="element-container" placeholder='Password' />
-                        <button type="button" onClick={props.toggleVisibility} className="show-password-btn">{props.whichLogo ? props.eye1 : props.eye2}</button>
+                        <Field id="enter-password-input" name="password" type={passwordShown ? "text" : "password"} maxLength="25" className="element-container" placeholder='Password' />
+                        <button type="button" onClick={toggleVisibility} className="show-password-btn">{whichLogo ? eye1 : eye2}</button>
                         {errors.password && touched.password ? <div className='validation-error-text'>{errors.password}</div> : null}
 
                         <h6>Enter Password Again:</h6>
-                        <Field id="enter-password-input" name="confirmPassword" type={props.confirmedPasswordShown ? "text" : "password"} maxLength="25" className="element-container" placeholder='Confirm Password' />
-                        <button type="button" onClick={props.toggleVisibilityConfirmed} className="show-password-btn">{props.whichLogoConfirmed ? props.eye1 : props.eye2}</button>
+                        <Field id="enter-password-input" name="confirmPassword" type={confirmedPasswordShown ? "text" : "password"} maxLength="25" className="element-container" placeholder='Confirm Password' />
+                        <button type="button" onClick={toggleVisibilityConfirmed} className="show-password-btn">{whichLogoConfirmed ? eye1 : eye2}</button>
                         {errors.confirmPassword && touched.confirmPassword ? (<div className='validation-error-text'>{errors.confirmPassword}</div>) : null}
 
                         <div>
@@ -42,7 +83,7 @@ const SignupFormContainer = (props) => {
                         </div>
 
                         <button type='submit' onClick={function () {
-                            props.handleSignup({
+                            handleSignup({
                                 firstName: values.firstName,
                                 lastName: values.lastName,
                                 email: values.email,

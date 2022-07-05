@@ -1,9 +1,41 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import LoginSchema from '../../../schema/LoginSchema.component';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
+import { AuthContext } from '../../../context/Auth.context';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
+import { ERROR_MESSAGE, USER_TOKEN } from '../../../constants/constants';
+import { userLogin } from '../../../services/user.service';
 
-const LoginFormContainer = (props) => {
+const LoginFormContainer = () => {
+
+    const navigate = useNavigate();
+    const { setUserToken } = useContext(AuthContext);
+    const [passwordShown, setPasswordShown] = useState(false);
+    const [whichLogo, setLogo] = useState(true)
+
+    const eye1 = <FontAwesomeIcon icon={faEye} style={{ color: "gray" }} />
+    const eye2 = <FontAwesomeIcon icon={faEyeSlash} style={{ color: "gray" }} />
+
+    const handleLogin = async (data) => {
+        try {
+            const { data: token } = await userLogin(data)
+
+            localStorage.setItem(USER_TOKEN, token.token);
+            setUserToken(token.token);
+
+            navigate('/');
+
+        } catch (err) {
+            alert(ERROR_MESSAGE)
+        }
+    }
+
+    const toggleVisibility = () => {
+        setPasswordShown(!passwordShown);
+        setLogo(!whichLogo)
+    };
 
     return (
 
@@ -20,8 +52,8 @@ const LoginFormContainer = (props) => {
                         {errors.email && touched.email ? (<div className='validation-error-text'>{errors.email}</div>) : null}
 
                         <h6>Enter Password:</h6>
-                        <Field name="password" type={props.passwordShown ? "text" : "password"} className="element-container" placeholder='Password' />
-                        <button type="button" onClick={props.toggleVisibility} className="show-password-btn">{props.whichLogo ? props.eye1 : props.eye2}</button>
+                        <Field name="password" type={passwordShown ? "text" : "password"} className="element-container" placeholder='Password' />
+                        <button type="button" onClick={toggleVisibility} className="show-password-btn">{whichLogo ? eye1 : eye2}</button>
                         {errors.password && touched.password ? <div className='validation-error-text'>{errors.password}</div> : null}
 
                         <div>
@@ -29,7 +61,7 @@ const LoginFormContainer = (props) => {
                         </div>
 
                         <button type='submit' onClick={function () {
-                            props.handleLogin({
+                            handleLogin({
                                 email: values.email,
                                 password: values.password
                             })

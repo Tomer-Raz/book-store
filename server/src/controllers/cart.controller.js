@@ -1,4 +1,5 @@
 import Cart from "../models/cart.model.js";
+import { ErrorResponse, SuccessResponse } from "../models/response.model.js";
 
 export const getCart = async (req, res) => {
     const user = req.user;
@@ -6,19 +7,10 @@ export const getCart = async (req, res) => {
         const cart = await Cart.findOne({ 'ownerID': user._id });
         await cart.populate('books.bookID');
 
-        res.send({
-            status: 200,
-            statusText: 'ok',
-            data: cart,
-            message: ""
-        })
+        res.status(200).send(new SuccessResponse(200, 'Ok', cart, ""))
 
     } catch (err) {
-        res.status(500).send({
-            status: 500,
-            statusText: "Internal server error",
-            message: '',
-        })
+        res.status(500).send(new ErrorResponse(500, "Internal server error", ""))
     }
 }
 
@@ -31,19 +23,13 @@ export const addBookToCart = async (req, res) => {
         cart.books.push({ bookID: data.bookID })
         await cart.save()
 
-        res.status(201).send({
-            status: 201,
-            statusText: 'Created',
-            data: { cart: cart },
-            message: 'Book added to cart!'
-        })
+        res.status(201).send(new SuccessResponse(201, 'Created', cart, "Book added to cart!"))
+
 
     } catch (err) {
-        res.status(500).send({
-            status: 500,
-            statusText: "Internal server error",
-            message: '',
-        })
+
+        res.status(500).send(new ErrorResponse(500, "Internal server error", ""))
+
     }
 }
 
@@ -59,20 +45,11 @@ export const removeFromCart = async (req, res) => {
         cart.books.splice(index, 1)
 
         await cart.save()
-
-        res.status(200).send({
-            status: 200,
-            statusText: 'Okay',
-            data: cart,
-            message: `Book removed from cart!`
-        })
+        res.status(200).send(new SuccessResponse(200, 'Ok', cart, "Book removed from cart"))
 
     } catch (err) {
-        res.status(500).send({
-            status: 500,
-            statusText: "Internal server error",
-            message: '',
-        })
+
+        res.status(500).send(new ErrorResponse(500, "Internal server error", ""))
     }
 }
 
@@ -81,24 +58,15 @@ export const checkout = async (req, res) => {
 
     try {
         const cart = await Cart.findOne({ 'ownerID': user._id });
-        // cart.books.splice(0, cart.books.length)
         cart.books = []
 
         await cart.save()
 
-        res.status(200).send({
-            status: 200,
-            statusText: 'Ok',
-            data: cart,
-            message: 'Checkout Completed!'
-        })
+        res.status(200).send(new SuccessResponse(200, 'Ok', cart, "Checkout Completed!"))
 
     } catch (err) {
-        res.status(500).send({
-            status: 500,
-            statusText: "Internal server error",
-            message: '',
-        })
-    }
 
+        res.status(500).send(new ErrorResponse(500, "Internal server error", ""))
+
+    }
 }

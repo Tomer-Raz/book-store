@@ -22,7 +22,7 @@ const Details = () => {
     const { title, bookCover, author, pages, price, description } = book
 
     const handleAddBook = async () => {
-        const data = { 'bookID': bookID };
+        const data = { bookID };
         try {
             const { message } = await addToCart(userToken, data)
 
